@@ -15,7 +15,7 @@ const getWalletById = (req, res) => {
 };
 
 const createWallet = (req, res) => {
-  const { user_id, name } = req.body;
+  const { user_id, name }  = req.body;
 
   const newWallet = {
     id: nextId++, 

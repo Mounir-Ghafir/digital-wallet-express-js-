@@ -58,4 +58,4 @@ const updateUser = (req, res) => {
   res.json({ message: 'User updated successfully', user });
 };
 
-module.exports = { getAllUsers, getUserById, createUser, deleteUser, updateUser }
+module.exports = { getAllUsers, getUserById, createUser, deleteUser, updateUser, users };
