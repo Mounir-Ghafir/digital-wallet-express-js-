@@ -1,5 +1,4 @@
-const users = [ { id: 1, name: 'Alice', email: 'alice@email.com', phone: '111-222-3333' },
-  { id: 2, name: 'Bob',   email: 'bob@email.com',   phone: '444-555-6666' },];
+const users = [];
 let length = 3
 
 const getAllUsers = (req, res) => {
