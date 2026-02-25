@@ -1,13 +1,25 @@
 {
-  "name": "digital-wallet",
+  "name": "server",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "node server"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mounir-Ghafir/server.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module"
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Mounir-Ghafir/server/issues"
+  },
+  "homepage": "https://github.com/Mounir-Ghafir/server#readme",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
 }

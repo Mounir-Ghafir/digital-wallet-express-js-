@@ -1,8 +1,10 @@
-import http from 'http';
-import router from './routes/userRoutes.js'; 
+const express = require('express');
+const userRouter = require('./userRouter');
 
-const server = http.createServer(router);
+const app = express();
 
-server.listen(3000, () => {
-  console.log('Server running at http://localhost:3000');
+app.use('/users', userRouter);
+
+app.listen(3000, () => {
+  console.log('Server running on port 3000');
 });
