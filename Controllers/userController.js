@@ -1,6 +1,5 @@
 const users = [];
-let length = 3
-
+let nextId = 1;
 const getAllUsers = (req, res) => {
   res.json(users);
 };
@@ -20,7 +19,7 @@ const createUser = (req, res) => {
   const { name, email, phone } = req.body;
 
   const newUser = {
-    id: length++,
+    id: nextId++,
     name,
     email,
     phone,
@@ -59,32 +58,4 @@ const updateUser = (req, res) => {
   res.json({ message: 'User updated successfully', user });
 };
 
-module.exports = { getAllUsers, getUserById, createUser, deleteUser, updateUser };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+module.exports = { getAllUsers, getUserById, createUser, deleteUser, updateUser }
