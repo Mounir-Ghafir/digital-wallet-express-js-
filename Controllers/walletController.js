@@ -43,17 +43,63 @@ const deleteWallet = (req, res) => {
 };
 
 const updateWallet = (req, res) => {
-  const wallet = wallets.find(w => w.id === Number(req.params.id));
+  const wallet = wallets.find(w => w.id === parseInt(req.params.id));
 
   if (!wallet) {
     return res.status(404).json({ message: 'Wallet not found' });
   }
 
-  const { name } = req.body;
+  const { name, sold } = req.body;
 
-  wallet.name = name;
+  if (name) {
+    wallet.name = name;
+  }
+
+  if (sold !== undefined) {
+    wallet.sold = sold;
+  }
 
   res.json({ message: 'Wallet updated successfully', wallet });
 };
 
-module.exports = { getAllWallets, getWalletById, createWallet, deleteWallet, updateWallet };
+const depositWallet = (req, res) => {
+  const wallet = wallets.find(w => w.id === parseInt(req.params.id));
+
+  if (!wallet) {
+    return res.status(404).json({ message: 'Wallet not found' });
+  }
+
+  const { amount } = req.body;
+
+  if (!amount || amount <= 0) {
+    return res.status(400).json({ message: 'Amount must be a positive number' });
+  }
+
+  wallet.sold += amount;
+
+  res.json({ message: 'Deposit successful', wallet });
+};
+
+const withdrawWallet = (req, res) => {
+  const wallet = wallets.find(w => w.id === parseInt(req.params.id));
+
+  if (!wallet) {
+    return res.status(404).json({ message: 'Wallet not found' });
+  }
+
+  const { amount } = req.body;
+
+  if (!amount || amount <= 0) {
+    return res.status(400).json({ message: 'Amount must be a positive number' });
+  }
+
+  if (wallet.sold < amount) {
+    return res.status(400).json({ message: 'Insufficient funds' });
+  }
+
+  wallet.sold -= amount;
+
+  res.json({ message: 'Withdrawal successful', wallet });
+};
+
+module.exports = { getAllWallets, getWalletById, createWallet, deleteWallet, updateWallet, depositWallet, withdrawWallet };
