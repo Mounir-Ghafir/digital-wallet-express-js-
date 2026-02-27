@@ -62,7 +62,7 @@ const updateUser = (req, res) => {
   res.json({ message: 'User updated successfully', user });
 };
 
-// Exported for use in validateWallet middleware
+
 const getUsers = () => readUsers().users;
 
 module.exports = { getAllUsers, getUserById, createUser, deleteUser, updateUser, getUsers };
