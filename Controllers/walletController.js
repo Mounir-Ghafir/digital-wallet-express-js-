@@ -1,103 +1,89 @@
-const wallets = [];
-let nextId = 1;
+const fs = require('fs');
+const path = require('path');
 
+const DATA_FILE = path.join(__dirname, '../data/wallets.json');
+
+const readWallets = () => {
+  if (!fs.existsSync(DATA_FILE)) return { wallets: [], nextId: 1 };
+  return JSON.parse(fs.readFileSync(DATA_FILE, 'utf-8'));
+};
+
+const writeWallets = (data) => {
+  fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+};
 
 const getAllWallets = (req, res) => {
+  const { wallets } = readWallets();
   res.json(wallets);
 };
 
 const getWalletById = (req, res) => {
+  const { wallets } = readWallets();
   const wallet = wallets.find(w => w.id === parseInt(req.params.id));
-  if (!wallet) {
-    return res.status(404).json({ message: 'Wallet not found' });
-  }
+  if (!wallet) return res.status(404).json({ message: 'Wallet not found' });
   res.json(wallet);
 };
 
 const createWallet = (req, res) => {
-  const { user_id, name }  = req.body;
+  const data = readWallets();
+  const { user_id, name } = req.body;
 
-  const newWallet = {
-    id: nextId++, 
-    user_id,
-    name,
-    sold: 0, 
-  };
-
-  wallets.push(newWallet);
+  const newWallet = { id: data.nextId++, user_id, name, sold: 0 };
+  data.wallets.push(newWallet);
+  writeWallets(data);
 
   res.status(201).json(newWallet);
 };
 
-
 const deleteWallet = (req, res) => {
-  const index = wallets.findIndex(w => w.id === parseInt(req.params.id));
+  const data = readWallets();
+  const index = data.wallets.findIndex(w => w.id === parseInt(req.params.id));
+  if (index === -1) return res.status(404).json({ message: 'Wallet not found' });
 
-  if (index === -1) {
-    return res.status(404).json({ message: 'Wallet not found' });
-  }
-
-  wallets.splice(index, 1);
+  data.wallets.splice(index, 1);
+  writeWallets(data);
 
   res.json({ message: 'Wallet deleted successfully' });
 };
 
 const updateWallet = (req, res) => {
-  const wallet = wallets.find(w => w.id === parseInt(req.params.id));
-
-  if (!wallet) {
-    return res.status(404).json({ message: 'Wallet not found' });
-  }
+  const data = readWallets();
+  const wallet = data.wallets.find(w => w.id === parseInt(req.params.id));
+  if (!wallet) return res.status(404).json({ message: 'Wallet not found' });
 
   const { name, sold } = req.body;
-
-  if (name) {
-    wallet.name = name;
-  }
-
-  if (sold !== undefined) {
-    wallet.sold = sold;
-  }
+  if (name) wallet.name = name;
+  if (sold !== undefined) wallet.sold = sold;
+  writeWallets(data);
 
   res.json({ message: 'Wallet updated successfully', wallet });
 };
 
 const depositWallet = (req, res) => {
-  const wallet = wallets.find(w => w.id === parseInt(req.params.id));
-
-  if (!wallet) {
-    return res.status(404).json({ message: 'Wallet not found' });
-  }
+  const data = readWallets();
+  const wallet = data.wallets.find(w => w.id === parseInt(req.params.id));
+  if (!wallet) return res.status(404).json({ message: 'Wallet not found' });
 
   const { amount } = req.body;
-
-  if (!amount || amount <= 0) {
-    return res.status(400).json({ message: 'Amount must be a positive number' });
-  }
+  if (!amount || amount <= 0) return res.status(400).json({ message: 'Amount must be a positive number' });
 
   wallet.sold += amount;
+  writeWallets(data);
 
   res.json({ message: 'Deposit successful', wallet });
 };
 
 const withdrawWallet = (req, res) => {
-  const wallet = wallets.find(w => w.id === parseInt(req.params.id));
-
-  if (!wallet) {
-    return res.status(404).json({ message: 'Wallet not found' });
-  }
+  const data = readWallets();
+  const wallet = data.wallets.find(w => w.id === parseInt(req.params.id));
+  if (!wallet) return res.status(404).json({ message: 'Wallet not found' });
 
   const { amount } = req.body;
-
-  if (!amount || amount <= 0) {
-    return res.status(400).json({ message: 'Amount must be a positive number' });
-  }
-
-  if (wallet.sold < amount) {
-    return res.status(400).json({ message: 'Insufficient funds' });
-  }
+  if (!amount || amount <= 0) return res.status(400).json({ message: 'Amount must be a positive number' });
+  if (wallet.sold < amount) return res.status(400).json({ message: 'Insufficient funds' });
 
   wallet.sold -= amount;
+  writeWallets(data);
 
   res.json({ message: 'Withdrawal successful', wallet });
 };
