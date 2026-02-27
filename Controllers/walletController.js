@@ -5,7 +5,9 @@ const DATA_FILE = path.join(__dirname, '../data/wallets.json');
 
 const readWallets = () => {
   if (!fs.existsSync(DATA_FILE)) return { wallets: [], nextId: 1 };
-  return JSON.parse(fs.readFileSync(DATA_FILE, 'utf-8'));
+  const content = fs.readFileSync(DATA_FILE, 'utf-8').trim();
+  if (!content) return { wallets: [], nextId: 1 };
+  return JSON.parse(content);
 };
 
 const writeWallets = (data) => {

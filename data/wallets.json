@@ -1,0 +1,11 @@
+{
+  "wallets": [
+    {
+      "id": 1,
+      "user_id": "1",
+      "name": "my wallet",
+      "sold": 444
+    }
+  ],
+  "nextId": 2
+}
